@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Table</title>
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin: 50px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .aref{
+            margin: 5px;
+        }
+        a{
+            padding: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align:center;">User Information Table</h2>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>OTP</th>
+            <th>Password</th>
+                        <th>V_status</th>
+            <th>Action</th>
+
+            
+        </tr>
+        {% for i in users %}
+        <tr>
+            <td>{{i.id}}</td>
+            <td>{{i.u_name}}</td>
+            <td>{{i.email}}</td>
+            <td>{{i.otp}}</td>
+            <td>{{i.password}}</td>
+            
+            <td>{{i.v_status}}</td>
+
+            <td>
+                <a class="aref" href="{% url 'edit_user' i.id %}">Edit</a>
+                <a class="aref" href="{% url 'delete_user' i.id %}">Delete</a>
+            </td>
+
+
+            
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
