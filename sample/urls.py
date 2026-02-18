@@ -16,8 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import path,include
 from . import views
 
 urlpatterns = [
@@ -28,4 +27,7 @@ urlpatterns = [
     path('edit/<int:uid>', views.editUser, name='edit_user'),
     path('update/', views.update_user, name='update'),
     path('delete/<int:uid>', views.delete_user, name='delete_user'),
+    path('verify/<str:email>/<int:otp>/', views.verify_otp, name='verify_otp'),
+    path('category/',include('category.urls')),
+
 ]

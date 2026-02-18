@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from sample.models import User, Student
 
 
+
 def sample_view(request):
     return HttpResponse("Salman bin sultan")
 
@@ -61,7 +62,9 @@ def demo_insert(req):
             otp = generate_otp()
             v_status = 0
             send_otp_email(email, otp)
-            create_user = User(u_name=name, password=pw, email=email, v_status=v_status,otp=otp)
+            create_user = User(
+                u_name=name, password=pw, email=email, v_status=v_status, otp=otp
+            )
             create_user.save()
             return redirect("/user_list/")
 
@@ -113,3 +116,56 @@ def delete_user(req, uid):
     user = get_object_or_404(User, id=uid)
     user.delete()
     return redirect("show_user")
+
+
+# /////////////////////////send mail link with otp function////////////////////////////
+
+
+
+
+def send_otp_email(user_email, otp):
+
+    verification_link = f"http://127.0.0.1:8000/verify/{user_email}/{otp}"
+
+    subject = "Verify Your Account"
+
+    message = f"""
+Please click the link below to verify your account:
+
+{verification_link}
+
+Your OTP is: {otp}
+This OTP will expire in 5 minutes.
+"""
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user_email],
+        fail_silently=False,
+    )
+
+    # views.py
+
+
+###/////////////////////////////////////////////////////////This view handles the "automatic" part. When the user clicks the link, this function runs immediately, checks the database, and updates the status.////////////////////////////
+
+
+def verify_otp(request, email, otp):
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        user = User.objects.filter(email=email, otp=entered_otp).first()
+        
+        if user:
+            user.v_status = 1
+            user.save()
+            return redirect('/user_list/')
+        else:
+            return render(request, 'verify.html', {'email': email, 'error': 'OTP সঠিক নয়!'})
+    
+    return render(request, 'verify.html', {'email': email, 'otp': otp})
+   
+
+# 2nd function verify_otp where after clicke the link the html form will be open and then the otp will inset inside the form verify_otp.html ## then the 2nd function will work check after click the submit button
+
